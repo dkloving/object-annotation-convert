@@ -3,9 +3,11 @@ from warnings import warn
 
 
 class Dataset(object):
+
+    required_columns = ['image_id', 'image_width', 'image_height', 'image_depth', 'x_min',
+                        'x_max', 'y_min', 'y_max', 'class_id', 'class_name']
+
     def __init__(self, source_object=None, image_read_method=None, **kwargs):
-        required_columns = ['image_id', 'image_width', 'image_height', 'image_depth', 'x_min',
-                            'x_max', 'y_min', 'y_max', 'class_id', 'class_name']
         self.__subdatasets = [self]
         if image_read_method is None:
             self.image_read_method = lambda x: x
@@ -15,7 +17,7 @@ class Dataset(object):
             self.image_read_method = image_read_method
 
         if source_object is None:
-            self.__dataframe = pd.DataFrame(data=None, columns=required_columns)
+            self.__dataframe = pd.DataFrame(data=None, columns=Dataset.required_columns)
 
         else:
             if type(source_object) == list:  # for combining multiple Datasets
@@ -32,8 +34,8 @@ class Dataset(object):
 
         # final check of required columns
         for dataset in self.__subdatasets:
-            if not all([c in dataset.__dataframe for c in required_columns]):
-                raise AttributeError('Must include columns for all of {}'.format(required_columns))
+            if not all([c in dataset.__dataframe for c in Dataset.required_columns]):
+                raise AttributeError('Must include columns for all of {}'.format(Dataset.required_columns))
 
     def read(self, idx):
         if not idx < len(self):
