@@ -1,0 +1,48 @@
+<annotation verified="yes">
+    <folder>Annotation</folder>
+    <filename>beautiful-woman-blur-brunette-2464638.jpg</filename>
+    <path>test_data-PascalVOC-export/Annotations/beautiful-woman-blur-brunette-2464638.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>640</width>
+        <height>799</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+    <name>person</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+        <xmin>5.405405405405405</xmin>
+        <ymin>157.45363214837712</ymin>
+        <xmax>581.1583011583011</xmax>
+        <ymax>798.9999999999999</ymax>
+    </bndbox>
+</object><object>
+    <name>eye</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+        <xmin>385.4826254826254</xmin>
+        <ymin>324.1692426584234</ymin>
+        <xmax>419.4594594594594</xmax>
+        <ymax>347.01545595054085</ymax>
+    </bndbox>
+</object><object>
+    <name>eye</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+        <xmin>323.0888030888031</xmin>
+        <ymin>291.4435857805255</ymin>
+        <xmax>358.7644787644787</xmax>
+        <ymax>317.3771251931994</ymax>
+    </bndbox>
+</object>
+</annotation>

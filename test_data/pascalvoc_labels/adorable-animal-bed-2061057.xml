@@ -1,0 +1,48 @@
+<annotation verified="yes">
+    <folder>Annotation</folder>
+    <filename>adorable-animal-bed-2061057.jpg</filename>
+    <path>test_data-PascalVOC-export/Annotations/adorable-animal-bed-2061057.jpg</path>
+    <source>
+        <database>Unknown</database>
+    </source>
+    <size>
+        <width>640</width>
+        <height>425</height>
+        <depth>3</depth>
+    </size>
+    <segmented>0</segmented>
+    <object>
+    <name>cat</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+        <xmin>309.8732394366197</xmin>
+        <ymin>91.4899257688229</ymin>
+        <xmax>460.40845070422534</xmax>
+        <ymax>316.83457051961824</ymax>
+    </bndbox>
+</object><object>
+    <name>eye</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+        <xmin>388.7464788732394</xmin>
+        <ymin>134.7560975609756</ymin>
+        <xmax>412.1830985915493</xmax>
+        <ymax>158.19194061505831</ymax>
+    </bndbox>
+</object><object>
+    <name>eye</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+        <xmin>345.92957746478874</xmin>
+        <ymin>137.00954400848354</ymin>
+        <xmax>369.8169014084507</xmax>
+        <ymax>159.99469777306467</ymax>
+    </bndbox>
+</object>
+</annotation>
