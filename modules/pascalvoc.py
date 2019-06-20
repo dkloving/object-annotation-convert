@@ -4,7 +4,7 @@ from pathlib import Path
 from warnings import warn
 
 from modules.dataset import Dataset
-from utils.io import read_image_file
+from utils.io import read_image_file, write_image_file, validate_image
 
 
 class PascalVOCReader:
@@ -15,8 +15,8 @@ class PascalVOCReader:
         if not Path(label_folder).is_dir():
             raise ValueError('Label folder {} not a valid directory'.format(label_folder))
         if image_folder_override is not None:
-            if not Path(label_folder).is_dir():
-                raise ValueError('Label folder {} not a valid directory'.format(label_folder))
+            if not Path(image_folder_override).is_dir():
+                raise ValueError('Image folder {} not a valid directory'.format(image_folder_override))
         self._image_folder_override = image_folder_override
         self._label_folder = label_folder
         self._dataframe = pd.DataFrame()
@@ -32,7 +32,6 @@ class PascalVOCReader:
         """TODO: docstring"""
         if deep_validate_images:
             warn("Deep validation of images can be very slow on large datasets.")
-        # label_files = glob.glob(os.path.join(self._label_folder, '*.xml'))
         label_files = Path(self._label_folder).glob('*.xml')
         objects_df = pd.DataFrame()
         for label_file in label_files:
@@ -43,15 +42,6 @@ class PascalVOCReader:
         self._dataframe = objects_df
         return self
 
-    def read(self):
-        pass
-
-    def __validate_image(self, image_path, deep, width, height, depth):
-        if deep:
-            raise NotImplementedError
-        else:
-            return Path(image_path).is_file()
-
     def __xml_to_dataframe(self, xml, deep_validate_images):
         """ TODO: docstring"""
         if self._image_folder_override is None:
@@ -61,7 +51,7 @@ class PascalVOCReader:
         image_width = xml.find('size').find('width').text
         image_height = xml.find('size').find('height').text
         image_depth = xml.find('size').find('depth').text
-        image_valid = self.__validate_image(image_id, deep_validate_images, image_width, image_height, image_depth)
+        image_valid = validate_image(image_id, deep_validate_images, image_width, image_height, image_depth)
         objects = []
         for item in xml:
             if item.tag == 'object':

@@ -1,4 +1,5 @@
 import numpy as np
+from pathlib import Path
 
 try:
     from PIL import Image
@@ -21,3 +22,10 @@ def write_image_file(image_array, filename):
     mode = 'L' if image_array.shape[-1] == 1 else 'RGB'
     pil_image = Image.fromarray(image_array, mode)
     pil_image.save(filename)
+
+
+def validate_image(image_path, deep, width, height, depth):
+    if deep:
+        raise NotImplementedError
+    else:
+        return Path(image_path).is_file()

@@ -1,12 +1,50 @@
 import pandas as pd
-import pathlib
+from pathlib import Path
 from warnings import warn
 
 from modules.dataset import Dataset
-from utils.io import write_image_file
+from utils.io import read_image_file, write_image_file, validate_image
 
 
-class SimpleCSVWriter:
+class CSVReader:
+    """TODO: docstring"""
+
+    def __init__(self, csv_file, image_folder_override=None):
+        """TODO docstring"""
+        if not Path(csv_file).is_file():
+            raise ValueError('csv_file {} not a valid file'.format(csv_file))
+        if image_folder_override is not None:
+            if not Path(image_folder_override).is_dir():
+                raise ValueError('Image folder {} not a valid directory'.format(image_folder_override))
+        self._image_folder_override = image_folder_override
+        self._csv_file = csv_file
+        self._dataframe = pd.DataFrame()
+        self._class_ids = dict()
+
+    def make_dataset(self, include_invalid_images=False):
+        source_dataframe = self._dataframe.drop('image_valid', axis=1) if include_invalid_images else\
+            self._dataframe[self._dataframe.image_valid].drop('image_valid', axis=1)
+        dataset = Dataset(source_object=source_dataframe, image_read_method=read_image_file)
+        return dataset
+
+    def fit(self, deep_validate_images=False):
+        """TODO: docstring"""
+        if deep_validate_images:
+            warn("Deep validation of images can be very slow on large datasets.")
+        csv_df = pd.read_csv(self._csv_file)
+        csv_df['image_valid'] = csv_df.apply(lambda row: validate_image(row['image_id'],
+                                                                        deep_validate_images,
+                                                                        row['image_width'],
+                                                                        row['image_height'],
+                                                                        row['image_depth']))
+        self._dataframe = csv_df
+        return self
+
+    def _get_invalid_images(self):
+        return self._dataframe[~self._dataframe.image_valid].image_id.unique()
+
+
+class CSVWriter:
 
     def __init__(self, folder_root, ignore_not_empty=False, image_format='jpg'):
         self._folder_root = folder_root
@@ -15,7 +53,7 @@ class SimpleCSVWriter:
         self.__prepare_folder()
 
     def __prepare_folder(self):
-        path = pathlib.Path(self._folder_root)
+        path = Path(self._folder_root)
         if not path.exists():
             path.mkdir()
         else:  # Houston, we *may* have a problem...
@@ -30,8 +68,8 @@ class SimpleCSVWriter:
 
     def make_valid_filename(self, filename, k=0):
         k_str = '' if k == 0 else '_' + str(k)
-        candidate_filename = pathlib.Path(filename).stem + k_str + '.' + self._image_format
-        if pathlib.Path(candidate_filename).exists():
+        candidate_filename = Path(filename).stem + k_str + '.' + self._image_format
+        if Path(candidate_filename).exists():
             return self.make_valid_filename(filename, k+1)
 
     def write_to_disk(self, dataset):
