@@ -1,8 +1,6 @@
-import os
-import glob
 from lxml import etree
 import pandas as pd
-from pathlib import PurePath
+from pathlib import Path
 from warnings import warn
 
 from modules.dataset import Dataset
@@ -14,10 +12,10 @@ class PascalVOCReader:
 
     def __init__(self, label_folder, image_folder_override=None):
         """ TODO: docstring"""
-        if not os.path.isdir(label_folder):
+        if not Path(label_folder).is_dir():
             raise ValueError('Label folder {} not a valid directory'.format(label_folder))
         if image_folder_override is not None:
-            if not os.path.isdir(label_folder):
+            if not Path(label_folder).is_dir():
                 raise ValueError('Label folder {} not a valid directory'.format(label_folder))
         self._image_folder_override = image_folder_override
         self._label_folder = label_folder
@@ -34,13 +32,14 @@ class PascalVOCReader:
         """TODO: docstring"""
         if deep_validate_images:
             warn("Deep validation of images can be very slow on large datasets.")
-        label_files = glob.glob(os.path.join(self._label_folder, '*.xml'))
+        # label_files = glob.glob(os.path.join(self._label_folder, '*.xml'))
+        label_files = Path(self._label_folder).glob('*.xml')
         objects_df = pd.DataFrame()
         for label_file in label_files:
-            with open(label_file, 'r') as file:
-                xml = etree.fromstring(file.read())
-                new_df = self.__xml_to_dataframe(xml, deep_validate_images)
-                objects_df = pd.concat([objects_df, new_df])
+            file = label_file.read_text()
+            xml = etree.fromstring(file)
+            new_df = self.__xml_to_dataframe(xml, deep_validate_images)
+            objects_df = pd.concat([objects_df, new_df])
         self._dataframe = objects_df
         return self
 
@@ -51,14 +50,14 @@ class PascalVOCReader:
         if deep:
             raise NotImplementedError
         else:
-            return os.path.isfile(image_path)
+            return Path(image_path).is_file()
 
     def __xml_to_dataframe(self, xml, deep_validate_images):
         """ TODO: docstring"""
         if self._image_folder_override is None:
-            image_id = str(PurePath(xml.find('path').text))  # PurePath handles POSIX / Win32 differences
+            image_id = str(Path(xml.find('path').text))  # PurePath handles POSIX / Win32 differences
         else:
-            image_id = str(PurePath(self._image_folder_override).joinpath(PurePath(xml.find('filename').text)))
+            image_id = str(Path(self._image_folder_override).joinpath(Path(xml.find('filename').text)))
         image_width = xml.find('size').find('width').text
         image_height = xml.find('size').find('height').text
         image_depth = xml.find('size').find('depth').text
